@@ -1,0 +1,27 @@
+.timeline{
+    width: 50%;
+}
+.entericon{
+    transform: rotate(90deg);
+    color: #2f54eb;
+    font-size: 22px;
+    margin-right: 10px;
+}
+.rowExspanCon{
+    overflow: hidden;
+    transition: all 0.4s;
+    height: 0px;
+}
+.rowExspanCon_close{
+    max-height: 0;
+
+}
+.rowExspanCon_open{
+    max-height: 2000px;
+}
+@media screen and (max-width: 750px){
+    .timeline{
+        width: 100% !important;
+    }
+}
+

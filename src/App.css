@@ -1,0 +1,103 @@
+.site-layout-sub-header-background {
+    background: #fff;
+}
+@media screen and (max-width: 500px) {
+    .header, .footer {
+        display: none;
+    }
+}
+@media screen and (max-height: 500px) {
+    .header, .footer {
+        display: none;
+    }
+}
+
+.site-layout-background {
+    background: #fff;
+}
+
+.logo {
+    width: 100%;
+    overflow: hidden;
+    user-select: none;
+    height: 32px;
+    margin: 16px 0;
+    background: rgba(255, 255, 255, 0);
+    font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    color: #00448b;
+    font-size: 20px;
+    line-height: 32px;
+    text-align: center;
+    font-weight: bolder;
+    /*box-shadow: 0 0 5px #0b12cd;*/
+}
+
+.minilogo {
+    width: 100%;
+    overflow: hidden;
+    user-select: none;
+    height: 32px;
+    margin: 16px 0;
+    background: rgba(38, 45, 95, 0);
+    font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    color: #00448b;
+    font-size: 20px;
+    line-height: 32px;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.content {
+    height: 100vh;
+}
+
+div::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+div::-webkit-scrollbar-track {
+    background: rgb(179, 177, 177);
+}
+
+div::-webkit-scrollbar-thumb {
+    background: rgb(136, 136, 136);
+}
+
+div::-webkit-scrollbar-thumb:hover {
+    background: rgb(100, 100, 100);
+}
+
+div::-webkit-scrollbar-thumb:active {
+    background: rgb(68, 68, 68);
+}
+textarea::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+textarea::-webkit-scrollbar-track {
+    background: rgb(179, 177, 177);
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background: rgb(136, 136, 136);
+}
+
+textarea::-webkit-scrollbar-thumb:hover {
+    background: rgb(100, 100, 100);
+}
+
+textarea::-webkit-scrollbar-thumb:active {
+    background: rgb(68, 68, 68);
+}
+.sider-footer{
+    width: 100%;
+    color: #a0a0a0;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+}
+.ant-layout-sider-children{
+    position: relative;
+}
