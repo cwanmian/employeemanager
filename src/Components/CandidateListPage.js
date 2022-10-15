@@ -54,7 +54,7 @@ const App = () => {
     const allselects = useRef({})
     const getdata = (type, page = 1, pageSize = 10) => {
         console.log("getdata", allselects.current, allsearchs.current)
-        axios.post("/getBugList", {
+        axios.post("/CandidateList", {
             type: "BUG",
             search: JSON.stringify(allsearchs.current),
             page,
@@ -184,19 +184,14 @@ const App = () => {
                         <CaretRightOutlined className="icon-CaretRightOutlined icon"/>
                         <a>{record.index}</a>
                     </Row>
-                    <Row>
-                        <Col style={{width: 120}}>
-                            <Switcher col="state2" id={record.id} checked={record.state2}/>
-                        </Col>
-                    </Row>
                 </>)
             },
             fixed: "left"
         },
         {
-            title: '具体问题',
-            key: 'content',
-            dataIndex: 'content',
+            title: '姓名',
+            key: 'name',
+            dataIndex: 'name',
             width: 200,
             fixed: fixtable,
             filterIcon: (filted) => {
@@ -208,9 +203,7 @@ const App = () => {
                 SearchFilterreset={SearchFilterreset} handlesearch={handleSearch}/>,
             render(text, record) {
                 return (
-                    <TextareaConfirm text={text} col="content" id={record.id}>
-
-                    </TextareaConfirm>
+                    text
                 )
             }
         },
