@@ -9,7 +9,7 @@ import {useSelector} from "react-redux";
 
 const {Panel} = Collapse;
 const dateFormat = 'YYYY-MM-DD';
-const App = ({startdate, planoverdate, id}) => {
+const App = ({adddate, planoverdate, id}) => {
     const con=createRef()
     useEffect(() => {
         con.current.parentNode.parentNode.className="ant-table-cell td-noborder"
@@ -36,15 +36,9 @@ const App = ({startdate, planoverdate, id}) => {
                         <Col>
                             <Row justify="start">
                                 <Col>
-                                    <a>提交时间:</a>
+                                    <a>添加时间:</a>
                                     <span onClick={prevent}>
-                                    <DateSelector value={startdate} clearable={false}/>
-                        </span>
-                                </Col>
-                                <Col>
-                                    <a>计划完成:</a>
-                                    <span onClick={prevent}>
-                                    <DateSelector value={planoverdate} clearable={false}/>
+                                    {adddate}
                         </span>
                                 </Col>
                             </Row>

@@ -4,7 +4,7 @@ import React, {useRef, useState} from "react";
 import axios from "axios";
 import {ExclamationCircleOutlined} from "@ant-design/icons";
 const { confirm } = Modal;
-const dateFormat = 'YYYY-MM-DD';
+const dateFormat = 'YYYY/MM';
 
 export default ({id,clearable, value,col}) => {
     const [date, setdate] = useState(value)
@@ -46,11 +46,12 @@ export default ({id,clearable, value,col}) => {
     }
     return (
         <><DatePicker
+            picker="month"
             onChange={(value, mode) => {
                 handleChange(value, mode)
             }}
             inputReadOnly
-            style={{width: 120}}
+            style={{width: 100}}
             value={date === "" ? "" : moment(date, dateFormat)}
             allowClear={clearable}
             bordered={false}

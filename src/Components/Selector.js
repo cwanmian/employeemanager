@@ -9,107 +9,9 @@ const { confirm } = Modal;
 export default function ({col,id,value}) {
     const [modalText, setModalText] = useState('确定修改么，你的操作将记入日志')
     const [data, setdata] = useState({
-        bankuai: [{title: "安全人员", color: "blue"},
-            {title: "安全指数", color: "red"},
-            {title: "驾驶舱", color: "volcano"},
-            {title: "监督检查", color: "orange"},
-            {title: "其他", color: "lime"},
-            {title: "项目部详情维护",
-                color: "green"
-            }, {
-                title: "学习强安",
-                color: "green"
-            }, {
-                title: "移动端指挥中心",
-                color: "cyan"
-            }, {
-                title: "应急管理",
-                color: "green"
-            }, {
-                title: "BI",
-                color: "cyan"
-            }],
-        state:[
-            {
-                title: "待处理",
-                color: "blue"
-            },
-            {
-                title: "开发处理中",
-                color: "red"
-            },
-            {
-                title: "普联UAT测试通过",
-                color: "volcano"
-            },
-            {
-                title: "其他平台处理",
-                color: "orange"
-            },
-            {
-                title: "生产环境待验证",
-                color: "lime"
-            },
-            {
-                title: "生产环境验证不通过",
-                color: "green"
-            },
-            {
-                title: "中建UAT测试通过",
-                color: "orange"
-            },
-            {
-                title: "中建UAT验证通过",
-                color: "cyan"
-            },
-            {
-                title: "UAT待测试",
-                color: "volcano"
-            }
-        ],
-        shuxing:[
-            {
-                title: "BUG",
-                color: "blue"
-            },
-            {
-                title: "优化",
-                color: "red"
-            },
-            {
-                title: "运维组处理",
-                color: "volcano"
-            },
-            {
-                title: "人力数据问题",
-                color: "orange"
-            },
-            {
-                title: "主数据问题",
-                color: "lime"
-            },
-            {
-                title: "财务数据问题",
-                color: "green"
-            },
-            {
-                title: "新增功能",
-                color: "lime"
-            }
-        ],
-        timerequire:[
-            {
-                title: "高",
-                color: "red"
-            },
-            {
-                title: "中",
-                color: "blue"
-            },
-            {
-                title: "低",
-                color: "green"
-            }
+        gender:[
+            {title:"♂",color:"blue"},
+            {title:"♀",color:"red"},
         ]
     })
     const [selectvalue,setselectvalue]=useState(value)
@@ -149,7 +51,7 @@ export default function ({col,id,value}) {
     }
 
     return (
-        <><Select showSearch onChange={(value, option)=>{handleSelect(value, option)}} style={{width: 160}} onClick={(e) => {
+        <><Select onChange={(value, option)=>{handleSelect(value, option)}} style={{width: 160}} onClick={(e) => {
             e.stopPropagation()
         }} showArrow={false} bordered={false} optionLabelProp="children" value={selectvalue}>
             {data[col].map((item,index)=>{

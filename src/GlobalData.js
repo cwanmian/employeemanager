@@ -1,1 +1,1 @@
-export const GlobalData={AppServerIp:"http://192.168.21.175:8383"}
+export const GlobalData={AppServerIp:"http://localhost:8585"}

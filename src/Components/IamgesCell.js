@@ -8,7 +8,7 @@ const { confirm } = Modal;
 
 export default ({images,id,col})=>{
     const [form]=Form.useForm()
-    const [pics,setpics]=useState(images)
+    const [pics,setpics]=useState(JSON.parse(images))
     const tempic=useRef()
     const [modalText, setModalText] = useState('确定修改么，你的操作将记入日志')
     const [open,setopen]=useState(false)
@@ -99,7 +99,7 @@ export default ({images,id,col})=>{
                         <Dropdown key={index} overlay={imgrightmenu(itm,index)} trigger={['contextMenu']}>
                             <Image
                                 key={index}
-                                height={40}
+                                height={90}
                                 src={GlobalData.AppServerIp+"/BugImages/"+itm}
                                 onClick={(e) => {
                                     e.stopPropagation();

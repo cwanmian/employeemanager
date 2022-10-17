@@ -21,7 +21,7 @@ const App = () => {
     useEffect(()=>{
         getuserinfo()
     },[])
-    axios.defaults.baseURL = "http://localhost:8383"
+    axios.defaults.baseURL = "http://localhost:8585"
     const [userinfo, setuserinfo] = useState({})
     const [showSkeleton, setshowSkeleton] = useState(!true)
     const [fullLogo, setFullLogo] = useState(true)
