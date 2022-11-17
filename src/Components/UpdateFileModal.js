@@ -20,13 +20,13 @@ export default ()=>{
         dispatch({type:"closeUpdateDataFileModal",data:false})
     }
     const onFinish=(values)=>{
-        const {images}=values
-        let newimgarr=images.map((item)=>{
-            return item.uid+".jpg"
+        const {files}=values
+        let newxlsxarr=files.map((item)=>{
+            return item.uid+".xlsx"
         })
-        const newimgs=JSON.stringify(newimgarr)
-        console.log(newimgs)
-        axios.post("/addColImage", {}).then((res) => {
+        const newxlsxs=JSON.stringify(newxlsxarr)
+        console.log(newxlsxs)
+        axios.post("/addUploadData", {files:newxlsxs}).then((res) => {
             if(res.data.code===200){
                 console.log("插入成功")
                 message.success(res.data.res)
@@ -48,7 +48,7 @@ export default ()=>{
         <Row align="middle">
             <Modal
                 maskClosable={false}
-                title="上传图片"
+                title="导入excel"
                 open={useSelector(state => state.UpdateDataFileModalReducer.open)}
                 onOk={handleUpImgOk}
                 confirmLoading={confirmLoading}
@@ -63,11 +63,11 @@ export default ()=>{
                     onFinish={onFinish}
                 >
                     <Form.Item
-                        name="images"
+                        name="files"
                         rules={[
                             {
                                 required: true,
-                                message:"请上传至少一张图片"
+                                message:"请上传至少一份文件"
                             },
                         ]}
                     >

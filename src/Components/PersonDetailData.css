@@ -1,0 +1,79 @@
+.customBadge {
+    display: inline-block;
+    font-size: 14px;
+    line-height: 14px;
+    padding: 5px 16px;
+    border-radius: 15px;
+    color: #34a2dd;
+    background-color: #c9ebff;
+}
+
+.titleItem {
+    font-size: 14px;
+    white-space: pre;
+    line-height: 30px;
+    color: #333;
+}
+
+.litleTile {
+    font-size: 20px;
+    font-weight: bold;
+    color: #161616;
+}
+
+.litleTileDot:before {
+    content: "";
+    position: absolute;
+    width: 36px;
+    border-bottom: 4px solid #18BBF4;
+    bottom: -3px;
+}
+
+.callout {
+    color: #096dd9;
+    border: solid 1px #91d5ff;
+    box-shadow: 0 0 2px #91d5ff;
+    width: 100%;
+    height: 50px;
+    position: relative;
+    padding-left: 10px;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: #e6f7ff;
+}
+
+.callout * {
+    vertical-align: middle;
+}
+
+.calloutdot {
+    position: absolute;
+    left: 0;
+    height: 100%;
+    background-color: #00c0ff;
+    width: 4px;
+}
+
+.calloutItem {
+    display: inline-block;
+    line-height: 50px;
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.litleTile2 {
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.litleTile3 {
+    color: #333;
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;
+    display: inline-block;
+    textOverflow: ellipsis;
+}

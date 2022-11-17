@@ -9,7 +9,9 @@ import Body1 from "./Body1";
 import CandidateListPage from "./Components/CandidateListPage";
 import {useEffect} from "react";
 import axios from "axios";
-import AddBugForm from "./Components/AddBugForm";
+import AddBugForm from "./Components/AddCandidateForm";
+import {GlobalData} from "./GlobalData";
+import CompanyListPage from "./Components/CompanyListPage";
 
 const {Content, Sider, Header} = Layout;
 ConfigProvider.config({
@@ -18,10 +20,11 @@ ConfigProvider.config({
     },
 });
 const App = () => {
-    useEffect(()=>{
+    useEffect(() => {
         getuserinfo()
-    },[])
-    axios.defaults.baseURL = "http://localhost:8585"
+    }, [])
+    axios.defaults.baseURL = GlobalData.AppServerIp
+
     const [userinfo, setuserinfo] = useState({})
     const [showSkeleton, setshowSkeleton] = useState(!true)
     const [fullLogo, setFullLogo] = useState(true)
@@ -44,7 +47,7 @@ const App = () => {
             dispatch({
                 type: "addBodyItem", data: {
                     title: '公司清单',
-                    content: <Body1/>,
+                    content: <CompanyListPage/>,
                     key: "updatemanager",
                 }
             })
@@ -92,17 +95,7 @@ const App = () => {
                 }}/>退出
             </Space>
         ),
-    }, {
-        key: '2',
-        label: (
-            <Space onClick={logout} align="center">
-                <LogoutIcon style={{
-                    fontSize: '23px',
-                }}/>退出
-            </Space>
-        ),
-    },]}>
-
+    }]}>
     </Menu>)
     return (
         <Layout className="content">
@@ -113,7 +106,7 @@ const App = () => {
                 collapsible={true}
                 onCollapse={(v) => {
                     setFullLogo(!v)
-                    dispatch({type:v?"closeSider":"openSider"})
+                    dispatch({type: v ? "closeSider" : "openSider"})
                 }}
                 zeroWidthTriggerStyle={{top: 10}}
             >
@@ -166,7 +159,7 @@ const App = () => {
                         }}
                     >
                         {showSkeleton ? <Skeleton active/> : <Body></Body>}
-                        <Drawer width={window.innerWidth < 600 ? "100%" : 600} title="提交Bug" placement="right"
+                        <Drawer title="新增候选人" placement="bottom" height="100%"
                                 onClose={() => {
                                     dispatch({type: "close", data: ""})
                                 }} open={useSelector((state) => state.AddFormDrawerReducer.open)}

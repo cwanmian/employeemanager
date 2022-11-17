@@ -1,0 +1,44 @@
+.item-enter {
+    opacity: 0;
+    overflow: hidden;
+    height: 0;
+}
+.item-enter-active {
+    opacity: 1;
+    height: 336px;
+    overflow: hidden;
+    transition: all 300ms ease-in;
+}
+.item-exit {
+    height: 336px;
+    overflow: hidden;
+    opacity: 1;
+}
+.item-exit-active {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: all 300ms ease-in;
+}
+.labelColDiv{
+    text-align: right!important;
+}
+@media screen and (max-width: 576px) {
+    .labelColDiv{
+        text-align: left!important;
+    }
+}
+.ant-drawer-body{
+    overflow-x: hidden;
+}
+.ItemTitle{
+    width: 95%;
+    font-size: 23px;
+    font-weight: 300;
+    margin: 30px auto;
+    height: 50px;
+    line-height: 50px;
+    background-color: #5aaedc;
+    padding-left:5%;
+    color: #ffffff;
+}

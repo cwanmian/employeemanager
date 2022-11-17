@@ -2,7 +2,6 @@ import {InboxOutlined, PlusOutlined} from '@ant-design/icons';
 import {Image, message, Modal, Upload} from 'antd';
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {useSelector} from "react-redux";
 import {GlobalData} from "../GlobalData";
 const { Dragger } = Upload;
 const App = (props) => {
@@ -11,7 +10,9 @@ const App = (props) => {
 
     ]);
     const onRemove=(file)=>{
-        axios.post("/removeUpdatefile", {filename:file.uid}).then((res) => {
+        let strarr=file.name.split(".")
+        let ext=strarr[strarr.length-1]
+        axios.post("/removeResumes", {filename:file.uid+"."+ext}).then((res) => {
             if(res.data.code===200){
                 console.log("删除成功")
                 message.success(res.data.res)
@@ -27,20 +28,24 @@ const App = (props) => {
             return false
         })
     }
+
     const handleChange = ({ fileList: newFileList }) => {
         onChange(newFileList)
+        console.log(newFileList)
         setFileList(newFileList)
     }
+
     return (
         <>
             <Dragger
                 onRemove={(file)=>{onRemove(file)}}
-                accept=".xlsx"
-                action={GlobalData.AppServerIp+"/reciveuploaddatafile"}
+                accept=".png, .jpg, .jpeg, .doc, .docx, .xlsx, .pdf"
+                action={GlobalData.AppServerIp+"/reciveResumes"}
                 listType="picture"
                 fileList={fileList}
                 data={(file)=>{return {filename:file.uid}}}
                 method="post"
+                maxCount={5}
                 onChange={handleChange}
             >
                 <p className="ant-upload-drag-icon">

@@ -1,22 +1,24 @@
 import {
-    Button, Col, Image, message, Pagination, Row, Space, Table, Tag, Tooltip, Upload
+    Button, Col, Image, message, Modal, Pagination, Row, Space, Table, Tag, Tooltip, Upload
 } from 'antd'
-import {PlusOutlined, CaretRightOutlined, FilterFilled, UploadOutlined} from '@ant-design/icons'
+import {
+    PlusOutlined,
+    CaretRightOutlined,
+    FilterFilled,
+    UploadOutlined,
+    ExclamationCircleOutlined
+} from '@ant-design/icons'
 import React, {Fragment, useEffect, useRef, useState} from 'react'
 import BugTableRowExpan from "./BugTableRowExpan"
-import "./CandidateListPage.css"
-import TextareaConfirm from "./TextareaConfirm";
-import DateSelector from "./DateSelector";
+import "./CompanyListPage.css"
 import {useDispatch, useSelector} from "react-redux";
 import axios from "axios";
-import Selector from "./Selector";
 import FilterSearchComp from "./FilterSearchComp";
 import "../assets/font-awesome-4.7.0/css/font-awesome.min.css"
 import ResizableTitle from "./ResizableTitle"
 import {GlobalData} from "../GlobalData";
-import PersonDetailData from "./PersonDetailData";
-import CommentsPopContent from "./CommentsPopContent";
-import moment from "moment";
+import AddCompanyForm from "./AddCompanyForm";
+import EditCompanyForm from "./EditCompanyForm";
 
 const App = () => {
     useEffect(() => {
@@ -48,31 +50,19 @@ const App = () => {
             }
         })
     }, [])
+    const modaladdform=useRef()
+    const modaleditform=useRef()
     const allsearchs = useRef({})
     const allselects = useRef({})
     const getdata = (type, page = 1, pageSize = 20) => {
         setcurrentpage(page)
-        axios.post("/CandidateList", {
+        axios.post("/CompanyList", {
             search: JSON.stringify(allsearchs.current), page, pageSize, filter: JSON.stringify(allselects.current)
         },).then((res) => {
             settableloading(false)
             if (res.data.code === 200) {
                 let temrowkeys = []
                 let temdata = res.data.res.data.map((item, index) => {
-                    let temempcompany = []
-                    let temempComments = []
-                    res.data.res.empcompanylist.forEach((itm, idx) => {
-                        if (itm.uid === item.uid) {
-                            temempcompany.push(itm)
-                        }
-                    })
-                    res.data.res.employeesCommentsList.forEach((itm, idx) => {
-                        if (itm.uid === item.uid) {
-                            temempComments.push(itm)
-                        }
-                    })
-                    item["companylist"] = temempcompany
-                    item["commentslist"] = temempComments
                     item["key"] = item["id"] + ""
                     item["index"] = (page - 1) * pageSize + index + 1
                     temrowkeys.push(item["key"])
@@ -184,37 +174,68 @@ const App = () => {
         }
 
     }
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [isModalOpen2, setIsModalOpen2] = useState(false)
+    const [editdata, seteditdata] = useState({a:2})
+    const deleteCompany=(id)=>{
+        Modal.confirm({
+            title: '确认删除么？',
+            icon: <ExclamationCircleOutlined />,
+            okText: '确认',
+            cancelText: '取消',
+            onOk(){
+                axios.post("/deleteCompany",{id}).then((res)=>{
+                    if(res.data.code===200){
+                        message.success("delete success")
+                        getdata()
+                    }else{
+                        message.error(res.data.res)
+                    }
+                },(res)=>{
+                    message.error(res.data)
+                })
+            }
+        });
+    }
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleOk = () => {
+        modaladdform.current.submit()
+        // setIsModalOpen(false)
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false)
+    };
+    const handleOk2 = () => {
+        modaleditform.current.submit()
+        // setIsModalOpen(false)
+    };
+    const handleCancel2 = () => {
+        setIsModalOpen2(false)
+    };
     const colnames = useRef({
         index: "序号",
-        name: "姓名",
-        gender: "性别",
-        tel: "电话",
-        base: "工作地点",
-        photo: "照片",
-        birth: "出生年月",
-        email: "电子邮箱",
+        name: "公司名称"
     })
     const columns = [
         {
-            title: '操作', align: "center", width: 50, dataIndex: 'index', key: 'index', render(text, record) {
-                return (<>
-                    <Row justify="center" style={{cursor: "pointer"}} align="middle" onClick={(e) => {
-                        togglerablerow(e, record)
-                    }}>
+            title: '操作', align: "center", width: 90, dataIndex: 'index', key: 'index', render(text, record) {
+                return <Row justify="center" style={{cursor: "pointer"}} align="middle">
+                    <Button onClick={()=>{setIsModalOpen2(true);seteditdata({...record})}} style={{padding:3}} type="link">编辑</Button>
+                    <Button onClick={()=>{deleteCompany(record.id)}} style={{padding:3}} type="link" danger>删除</Button>
+                </Row>
 
-                        <CaretRightOutlined className="icon-CaretRightOutlined icon"/>
-                        <a>日志</a>
-
-                    </Row>
-
-                </>)
             }, fixed: "left"
         },
         {
-            title: '姓名',
+            title: '公司名称',
             key: 'name',
             dataIndex: 'name',
-            width: 60,
+            width: 160,
+            ellipsis: {
+                showTitle: false,
+            },
             fixed: fixtable,
             filterIcon: (filted) => {
                 return getFilterIcon(filted, "search")
@@ -224,142 +245,81 @@ const App = () => {
                 selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys} confirm={confirm} col="name"
                 SearchFilterreset={SearchFilterreset} handlesearch={handleSearch}/>,
             render(text, record) {
-                return <Button style={{paddingLeft: 0}} type="link" onClick={() => {
-                    console.log("打开id", record.id)
-                    dispatch({
-                        type: "addBodyItem", data: {
-                            title: record.name,
-                            content: <PersonDetailData id={record.id}/>,
-                            key: record.id,
-                        }
-                    })
-                    dispatch({type: "setActiveKey", data: record.id})
-                    dispatch({type: "setMenuActiveKey", data: record.id})
-                }}><span style={{display:"inline-block",width:60,overflow:"hidden",textOverflow:"ellipsis"}}>{text}{record.gender === "♂" ? GlobalData.maleicon() : GlobalData.femaleicon()}</span></Button>
+                return <Tooltip placement="topLeft" title={text}>
+                    {text}
+                </Tooltip>
+
             }
         },
-        // {
-        //     title: "照片", key: "photo", dataIndex: 'photo', width: 120, render(text, record) {
-        //         return (<Image
-        //             style={{clipPath: "circle(36px at 36px 36px)", objectFit: "cover", objectPosition: ""}}
-        //             fallback={GlobalData.AppServerIp + (record.gender === "♀" ? "/EmployeesImages/female.png" : "/EmployeesImages/male.png")}
-        //             width={72}
-        //             height={72}
-        //             src={GlobalData.AppServerIp + "/EmployeesImages/" + JSON.parse(text)[0]}
-        //         />)
-        //     }
-        // },
-        /*{
-            title: '性别',
-            key: 'gender',
-            width: 60,
-            filterSearch: true,
-            filterIcon: (filted) => {
-                return getFilterIcon(filted, "select")
-            },
-            filteredValue: allFilterInfo.current.gender || null, filters: [
-                {
-                    text: '男', value: '♂',
-                },
-                {
-                    text: '女', value: '♀',
-                }],
-            dataIndex: 'gender',
-            render: (text, record) => {
-                return text === "♂" ? GlobalData.maleicon({size: 25}) : GlobalData.femaleicon()
-            },
-        },*/
-        /*{
-            title: '年龄',
-            key: 'birth',
-            dataIndex: 'birth',
-            width: 40,
-            render: (text, record) => (moment().format("YYYY") - moment(text, "YYYY-MM").format("YYYY")),
-        },*/
-        // {
-        //     title: '电话',
-        //     key: 'tel',
-        //     dataIndex: 'tel',
-        //     width: 140,
-        //     filterIcon: (filted) => {
-        //         return getFilterIcon(filted, "search")
-        //     },
-        //     filteredValue: allFilterInfo.current.tel || null,
-        //     filterDropdown: ({setSelectedKeys, selectedKeys, confirm, clearFilters}) => <FilterSearchComp
-        //         selectedKeys={selectedKeys} setSelectedKeys={setSelectedKeys} confirm={confirm} col="tel"
-        //         SearchFilterreset={SearchFilterreset} handlesearch={handleSearch}/>,
-        //     render(text, record) {
-        //         return <TextareaConfirm text={text} col="tel" id={record.id}/>
-        //     }
-        // },
         {
-            title: '任职公司', dataIndex: 'companylist', key: 'companylist', width: 160,
+            title: "Logo", key: "logo", dataIndex: 'logo', width: 90, render(text, record) {
+                return (<Image
+                    style={{objectFit: "cover", objectPosition: ""}}
+                    fallback={GlobalData.AppServerIp + (record.gender === "♀" ? "/EmployeesImages/female.png" : "/EmployeesImages/male.png")}
+                    width={40}
+                    height={40}
+                    src={GlobalData.AppServerIp + "/CompanyLogo/" + JSON.parse(text)[0]}
+                />)
+            }
+        },
+        {
+            title: 'EN',
             ellipsis: {
                 showTitle: false,
-            }, render(text, record) {
-                return <Tooltip placement="topLeft" title={text.length > 0 ? text[0].company : "无"}>
-                    {text.length > 0 ? text[0].company : ""}
+            },
+            dataIndex: 'enname', key: 'enname', width: 100, render(text, record) {
+                return <Tooltip placement="topLeft" title={text}>
+                    {text}
                 </Tooltip>
             }
         },
         {
-            title: '职位',
+            title: '编号',
             ellipsis: {
                 showTitle: false,
             },
-            dataIndex: 'companylist', key: 'companylist', width: 100, render(text, record) {
-                return <Tooltip placement="topLeft" title={text.length > 0 ? text[0].zhiwei : "无"}>
-                    {text.length > 0 ? text[0].zhiwei : ""}
+            dataIndex: 'number', key: 'number', width: 130, render(text, record) {
+                return <Tooltip placement="topLeft" title={text}>
+                    {text}
                 </Tooltip>
             }
         },
         {
-            title: '寻访记录', dataIndex: 'commentslist', key: 'commentslist', width: 500, render(text, record) {
-                return <CommentsPopContent name={record.name} list={record.commentslist}/>
+            title: 'WebSite', dataIndex: 'web', key: 'web', width: 300, render(text, record) {
+                return <a href={text} target="_blank">{text}</a>
             }
         },
         {
-            title: '行业',
+            title: 'Address',
             ellipsis: {
                 showTitle: false,
-            }, dataIndex: 'companylist', key: 'companylist', width: 100, render(text, record) {
-                return <Tooltip placement="topLeft" title={text.length > 0 ? text[0].field : "无"}>
-                    {text.length > 0 ? text[0].field : ""}
+            }, dataIndex: 'address', key: 'address', width: 100, render(text, record) {
+                return <Tooltip placement="topLeft" title={text}>
+                    {text}
                 </Tooltip>
             }
         },
         {
-            title: '职能',
+            title: 'Notes',
             ellipsis: {
                 showTitle: false,
             },
-            dataIndex: 'companylist', key: 'companylist', width: 100, render(text, record) {
-                return <Tooltip placement="topLeft" title={text.length > 0 ? text[0].stage : "无"}>
-                    {text.length > 0 ? text[0].stage : ""}
+            dataIndex: 'notes', key: 'notes', width: 400, render(text, record) {
+                return <Tooltip placement="topLeft" title={text}>
+                    {text}
                 </Tooltip>
             }
         },
         {
-            title: '城市', dataIndex: 'base', key: 'base', width: 100, render(text, record) {
-                return JSON.parse(text).map((item, index) => {
-                    return <Tag key={index} color="blue">{item}</Tag>
-                })
-            }
-        },
-        {
-            title: '编号', align: "center", width: 70, dataIndex: 'index', key: 'index', render(text, record) {
+            title: 'Type', dataIndex: 'type', key: 'type', width: 100, render(text, record) {
                 return text
             }
         },
-
-
-        // {
-        //     title: '电子邮箱 ',
-        //     key: 'email',
-        //     dataIndex: 'email',
-        //     width: 260,
-        //     render: (text, record) => (<TextareaConfirm text={text} col="email" id={record.id}/>),
-        // }
+        {
+            title: 'Stock', width: 70, dataIndex: 'stock', key: 'stock', render(text, record) {
+                return text
+            }
+        }
     ]
     const removeSearchItem = (item) => {
         allsearchs.current[item] = null
@@ -396,31 +356,16 @@ const App = () => {
         col.onHeaderCell = () => ({width: col.width, onResize: handleResize(col)})
         return col
     }))
-    const togglerablerow = (e, record) => {
-        let contentnode = e.currentTarget.parentNode.parentNode.nextSibling.firstChild.firstChild.firstChild
-        if (contentnode.style.height === "0px") {
-            e.currentTarget.firstChild.className = "icon-CaretRightOutlined icon icon-CaretRightOutlined-rotate"
-            contentnode.style.height = contentnode.scrollHeight + "px"
-            contentnode.parentNode.parentNode.className = "ant-table-cell"
-        } else {
-            e.currentTarget.firstChild.className = "icon-CaretRightOutlined icon"
-            contentnode.style.height = "0px"
-            contentnode.parentNode.parentNode.className = "ant-table-cell td-noborder"
-        }
-    }
     const handlePageChange = (page, pageSize) => {
         settableloading(true);
         getdata("BUG", page, pageSize);
         setcurrentpage(page)
     }
-    const showAddBugModal = () => {
-        dispatch({type: "open", data: ""})
-    }
     const uploadfileprops = {
         name: 'file',
         accept: ".xlsx",
         data: (file) => ({filename: file.uid}),
-        action: GlobalData.AppServerIp + '/addUploadData',
+        action: GlobalData.AppServerIp + '/addUploadCompanyData',
         showUploadList: false,
         onChange(info) {
             setuploadDataFileLoading(true)
@@ -440,6 +385,12 @@ const App = () => {
                 message.error(`${info.file.name} file upload failed.`);
             }
         }
+    }
+    const getaddForm=(form)=>{
+        modaladdform.current=form
+    }
+    const geteditForm=(form)=>{
+        modaleditform.current=form
     }
     return (<Fragment>
         <div>
@@ -462,7 +413,7 @@ const App = () => {
             <Row justify="space-between" wrap={false}>
                 <Col>
                     <Button type="primary" icon={<PlusOutlined/>} style={{margin: 10}}
-                            onClick={showAddBugModal}>添加</Button>
+                            onClick={showModal}>添加</Button>
                     <Button type="ghost" style={{margin: 10}} onClick={clearAllFilters}>刷新</Button></Col>
                 <Col>
                     <span style={{display: "inline-flex"}}>
@@ -475,7 +426,7 @@ const App = () => {
                     </Upload>
                 </span>
                     <Button type="ghost" style={{margin: "10px 0"}}
-                            href={GlobalData.AppServerIp + "/demofile/模板.xlsx"}>下载模板</Button>
+                            href={GlobalData.AppServerIp + "/demofile/公司模板.xlsx"}>下载模板</Button>
                 </Col>
             </Row>
         </div>
@@ -507,6 +458,12 @@ const App = () => {
                         handlePageChange(page, pageSize)
                     }}
         />
+        <Modal title="新增公司" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={900} destroyOnClose okText="提交">
+            <AddCompanyForm getForm={getaddForm} closeModal={()=>{handleCancel();getdata();}}/>
+        </Modal>
+        <Modal title="修改公司" open={isModalOpen2} onOk={handleOk2} onCancel={handleCancel2} width={900} destroyOnClose okText="提交">
+            <EditCompanyForm getForm={geteditForm} initdata={editdata} closeModal={()=>{handleCancel2();getdata();}}/>
+        </Modal>
     </Fragment>)
 }
 

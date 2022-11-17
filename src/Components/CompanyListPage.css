@@ -1,0 +1,28 @@
+.expandedRow td{
+    padding: 0!important;
+}
+.ant-table-expanded-row-fixed{
+    padding: 5px!important;
+}
+.icon-CaretRightOutlined{
+    color: #1890ff;
+}
+.icon-CaretRightOutlined-rotate{
+    color: #1890ff;
+    transform: rotate(90deg);
+}
+.icon{
+    transition: all 0.5s;
+}
+.td-noborder{
+    border: 0!important;
+}
+.ant-table-filter-column{
+    margin-right: 10px!important;
+}
+.react-resizable-handle-se{
+    cursor: col-resize!important;
+}
+.react-resizable-handle{
+    background-image: none!important;
+}

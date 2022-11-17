@@ -3,7 +3,8 @@ import {Image, message, Modal, Upload} from 'antd';
 import React, {useEffect, useState} from 'react';
 import axios from "axios";
 import {GlobalData} from "../GlobalData";
-const { Dragger } = Upload;
+
+const {Dragger} = Upload;
 const getBase64 = (file) =>
     new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -15,21 +16,34 @@ const getBase64 = (file) =>
     });
 
 const App = (props) => {
-    const { value = [], onChange }=props
+    const {value, onChange} = props
+    console.log(value);
+    let value1
+    useEffect(() => {
+        value1 = value.map((item, index) => {
+            console.log(item)
+            return {
+                uid: item.split(".")[0],
+                name: item,
+                status: 'done',
+                url: GlobalData.AppServerIp + '/CompanyLogo/' + item,
+            }
+        })
+        setFileList(value1)
+    }, [])
+
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
     const [previewTitle, setPreviewTitle] = useState('');
-    const [fileList, setFileList] = useState([
-
-    ]);
-    const onRemove=(file)=>{
-
-        axios.post("/removeimg", {filename:file.uid}).then((res) => {
-            if(res.data.code===200){
+    const [fileList, setFileList] = useState(value1);
+    const onRemove = (file) => {
+        console.log("remove")
+        axios.post("/removelogoimg", {filename: file.uid}).then((res) => {
+            if (res.data.code === 200) {
                 console.log("删除成功")
                 message.success(res.data.res)
-            }else{
-                if(res.data.res==="file delete error"){
+            } else {
+                if (res.data.res === "file delete error") {
                     message.error(res.data.res)
                     return false
                 }
@@ -51,38 +65,32 @@ const App = (props) => {
         setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
     };
 
-    const handleChange = ({ fileList: newFileList }) => {
-        onChange(newFileList)
+    const handleChange = ({fileList: newFileList}) => {
+        onChange(JSON.stringify(newFileList.map((item) => {
+            return item.uid + ".jpg"
+        })))
         setFileList(newFileList)
     }
 
-    const uploadButton = (
-        <div>
-            <PlusOutlined />
-            <div
-                style={{
-                    marginTop: 8,
-                }}
-            >
-                Upload
-            </div>
-        </div>
-    );
     return (
         <>
             <Dragger
-                onRemove={(file)=>{onRemove(file)}}
+                onRemove={(file) => {
+                    onRemove(file)
+                }}
                 accept=".png, .jpg, .jpeg"
-                action={GlobalData.AppServerIp+"/recivebugimg"}
+                action={GlobalData.AppServerIp + "/recivelogoimg"}
                 listType="picture"
                 fileList={fileList}
-                data={(file)=>{return {filename:file.uid}}}
+                data={(file) => {
+                    return {filename: file.uid}
+                }}
                 method="post"
                 onPreview={handlePreview}
                 onChange={handleChange}
             >
                 <p className="ant-upload-drag-icon">
-                    <InboxOutlined />
+                    <InboxOutlined/>
                 </p>
                 <p className="ant-upload-text">单击或拖动文件到此区域进行上载</p>
                 <p className="ant-upload-hint">
@@ -96,7 +104,7 @@ const App = (props) => {
                 }}
                 src={previewImage}
                 preview={{
-                    visible:previewOpen,
+                    visible: previewOpen,
                     src: previewImage,
                     onVisibleChange: (value) => {
                         setPreviewOpen(value);
